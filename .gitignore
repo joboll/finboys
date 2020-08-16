@@ -2,6 +2,10 @@
 _Archives/
 _Input/
 _Output/
+Back_up/
 Litterature/
 #ignore all .csv files
 *.csv 
+#ignore random files
+.DS_Store
+.ipynb_checkpoints/
