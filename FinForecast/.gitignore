@@ -1,0 +1,7 @@
+# ignore all of those folders
+_Archives/
+_Input/
+_Output/
+Litterature/
+#ignore all .csv files
+*.csv 
