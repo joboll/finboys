@@ -42,7 +42,7 @@ def infivedays(today= today(), delay= timedelta(days=5)):
     date_infivedays = today + delay
     return date_infivedays
 
-def get_pred(ticker, df_historical, ARIMA_order= (3,0,6), window_size=92):
+def ARIMA_prediction(ticker, df_historical, ARIMA_order= (3,0,6), window_size=92):
     """
     Take a dataframe of the historical data of a stock to return ARIMA price forcast in 5 days.
     """
@@ -88,7 +88,7 @@ def get_pred(ticker, df_historical, ARIMA_order= (3,0,6), window_size=92):
     return predicted_price_in_five_days.iloc[0]
 
 
-def emailer(subject, message, sender_email= 'finboys.news@gmail.com', receiver_email=  'finboys.news@gmail.com', smtp_ssl= "smtp.gmail.com"):
+def by_mail(subject, message, sender_email= 'finboys.news@gmail.com', receiver_email=  'finboys.news@gmail.com', smtp_ssl= "smtp.gmail.com"):
     """
     Send a simple email to recipient through secure SSL.
     """
