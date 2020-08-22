@@ -146,6 +146,7 @@ def forecast_accuracy(forecast, actual):
             'mpe': mpe, 'rmse':rmse, 
             'corr':corr, 'minmax':minmax})
 
+#%%
 def arima_forecast(array, ARIMA_order= (1,0,1), window_size= 100 ):
 
         mod_arma_t = ARIMA(array, order= ARIMA_order)
