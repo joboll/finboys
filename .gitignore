@@ -9,3 +9,5 @@ Litterature/
 #ignore random files
 .DS_Store
 .ipynb_checkpoints/
+# ignore all caches
+*.pyc
