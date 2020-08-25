@@ -7,7 +7,7 @@ ticker = 'TROX'
 path_to_df_historical = '~/Documents/finboys/_Output/TROX_2020_pour_input_arima.pickle'
 df_historical = pd.read_pickle(path_to_df_historical)
 
-pred = Share.ARIMA_prediction(ticker, df_historical)
+pred = Share.ARIMA_prediction(ticker, df_historical, ARIMA_order= (2,0,5))
 
 subject = 'Prediction du jour'
 message = "Le modele predit que {} cloturera a {:.2f} USD le {}".format(ticker, pred, str(Share.infivedays()))
