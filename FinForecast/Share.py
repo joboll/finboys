@@ -83,7 +83,7 @@ def ARIMA_prediction(ticker, df_historical, ARIMA_order= (3,0,6), window_size=92
     predicted_price_in_five_days = todays_close + (todays_close * (pred_rtn5 / 100))
 
     # Save the new df_historical
-    #df_historical.to_pickle(path_to_df_historical)
+    df_historical.to_pickle(path_to_df_historical)
 
     return predicted_price_in_five_days.iloc[0]
 
