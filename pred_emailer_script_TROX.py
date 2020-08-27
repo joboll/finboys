@@ -1,5 +1,3 @@
-
-
 from FinForecast import Share
 import pandas as pd
 
@@ -15,3 +13,4 @@ message = "Le modele predit que {} cloturera a {:.2f} USD le {}".format(ticker, 
 destinataires = ['francoisroyca@gmail.com', 'victor.m.cerdacarvajal@gmail.com',' thomas.brown.05@gmail.com', 'finboys.news@gmail.com']
 
 Share.by_mail(subject, message, receiver_email=destinataires)
+
