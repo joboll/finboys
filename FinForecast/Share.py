@@ -5,8 +5,6 @@ from datetime import date, timedelta
 from FinForecast import ArimaForecast as af
 
 
-ticker = 'TROX'
-
 # Init script to grab historical data base.
 """
     yahoo_financials = YahooFinancials(ticker)
@@ -42,9 +40,9 @@ def infivedays(today= today(), delay= timedelta(days=7)):
     date_infivedays = today + delay
     return date_infivedays
 
-def ARIMA_prediction(ticker, df_historical, ARIMA_order= (3,0,6), window_size=92):
+def ARIMA_prediction(ticker, df_historical, path_to_df_historical, ARIMA_order= (3,0,6), window_size=92):
     """
-    Take a dataframe of the historical data of a stock to return ARIMA price forcast in 5 days.
+    Take a dataframe of the historical data of a stock to return ARIMA price forecast in 5 days.
     """
 
     # Get today's close price
