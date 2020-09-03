@@ -1,8 +1,16 @@
+from __future__ import print_function
 from yahoofinancials import YahooFinancials
 import pandas as pd
 import smtplib, ssl
 from datetime import date, timedelta
 from FinForecast import ArimaForecast as af
+import pickle
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from pprint import pprint
+from googleapiclient import discovery
 
 
 # Init script to grab historical data base.
@@ -42,14 +50,14 @@ def infivedays(today= today(), delay= timedelta(days=7)):
 
 def ARIMA_prediction(ticker, df_historical, path_to_df_historical, ARIMA_order= (3,0,6), window_size=92):
     """
-    Take a dataframe of the historical data of a stock to return ARIMA price forecast in 5 days.
+    Take a dataframe of the historical data of a stock to return ARIMA price foretcast in 5 days.
     """
 
     # Get today's close price
     yahoo_financials = YahooFinancials(ticker)
     data_today = yahoo_financials.get_historical_price_data(start_date= str(today()),  
-                                                    end_date=str(tomorrow()),  
-                                                    time_interval='daily') 
+                                                            end_date= str(tomorrow()),  
+                                                            time_interval='daily') 
 
     # Extracting the data out of the dictionnary
     date = [data_today[ticker]['prices'][-1]['formatted_date']]
@@ -107,4 +115,77 @@ def by_mail(subject, message, sender_email= 'finboys.news@gmail.com', receiver_e
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message)
 
+    
+def ohlc_as_tuple(ticker, start_date= '2020-01-01', end_date= str(tomorrow())):
+    
+    yahoo_financials = YahooFinancials(ticker)
+    data_today = yahoo_financials.get_historical_price_data(start_date= start_date,  
+                                                            end_date= end_date,  
+                                                            time_interval= 'daily') 
 
+    date = [ i['formatted_date'] for i in data_today[ticker]['prices']]
+    high = [ i['high'] for i in data_today[ticker]['prices']]
+    low = [ i['low'] for i in data_today[ticker]['prices']] 
+    open_ = [ i['open'] for i in data_today[ticker]['prices']]
+    close_ = [ i['close'] for i in data_today[ticker]['prices']]
+    volume = [ i['volume'] for i in data_today[ticker]['prices']]
+    adjclose = [ i['adjclose'] for i in data_today[ticker]['prices']]
+
+    ohlc_tuple =  tuple(zip(date, high, low, open_, close_, volume, adjclose))
+    ohlc_list = [list(i) for i in ohlc_tuple]
+
+    return ohlc_list
+
+
+def by_ggsheet(values, file_id, range_, value_input_option= 'RAW', insert_data_option= 'OVERWRITE'):
+
+    """
+    Add (append) values to google spreadsheet.
+
+    Parameters:
+        values (list): list of values to append. https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values
+        file_id (str): Spreadsheet URL between d/ ... /edit
+        range_: A1 notation of the range of field to apply append method. Will be first empty row of 
+            column A anyway because it's what spreadsheets.values.append does.
+    """
+
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    creds = None
+    # The file token.pickle stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('_Credentials/token.pickle'):
+        with open('_Credentials/token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                '_Credentials/credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('_Credentials/token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
+    service = discovery.build('sheets', 'v4', credentials=creds)
+
+    # The ID of the spreadsheet to update.
+    spreadsheet_id = file_id  
+
+
+    value_range_body = {
+    "range": range_,
+    "majorDimension": 'ROWS',
+    "values": values,
+    }
+
+    request = service.spreadsheets().values().append(spreadsheetId= file_id, 
+                                                    range= range_, 
+                                                    valueInputOption= value_input_option, 
+                                                    insertDataOption= insert_data_option, 
+                                                    body= value_range_body
+                                                    )
+    response = request.execute()
