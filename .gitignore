@@ -12,5 +12,7 @@ Litterature/
 Plotly_test.ipynb
 _Snippets/ggsheetAPI_quickstart.py
 token.pickle
+FinBoys.code-workspace
+settings.json
 # ignore all caches
 *.pyc
