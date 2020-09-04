@@ -77,7 +77,6 @@ def ARIMA_prediction(df_today, df_historical, path_to_df_historical, ARIMA_order
     """
 
     # Add today's data to historical data
-    #df_historical = pd.read_pickle(path_to_df_historical)
     df_historical = df_historical.append(df_today)
 
     # Calcul today's return with 5 days ago
@@ -99,7 +98,7 @@ def ARIMA_prediction(df_today, df_historical, path_to_df_historical, ARIMA_order
     predicted_price_in_five_days = todays_close + (todays_close * (pred_rtn5 / 100))
 
     # Save the new df_historical
-    #df_historical.to_pickle(path_to_df_historical)
+    df_historical.to_pickle(path_to_df_historical)
 
     return predicted_price_in_five_days.iloc[0]
 
