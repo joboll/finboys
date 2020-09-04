@@ -48,11 +48,14 @@ def infivedays(today= today(), delay= timedelta(days=7)):
     date_infivedays = today + delay
     return date_infivedays
 
-def ARIMA_prediction(ticker, df_historical, path_to_df_historical, ARIMA_order= (3,0,6), window_size=92):
+def get_todays_close(ticker):
+    """Returns a simple dataframe of today's date as index and ticker's close as value.
+    Parameter:
+        ticker (str): Official stock market ticker. Ex.: 'TROX'
+    Exemple:
+                    close
+        2020-09-04   9.27
     """
-    Take a dataframe of the historical data of a stock to return ARIMA price foretcast in 5 days.
-    """
-
     # Get today's close price
     yahoo_financials = YahooFinancials(ticker)
     data_today = yahoo_financials.get_historical_price_data(start_date= str(today()),  
@@ -65,6 +68,13 @@ def ARIMA_prediction(ticker, df_historical, path_to_df_historical, ARIMA_order= 
 
     # Create today's df with today's data
     df_today = pd.DataFrame(data= close, index= date, columns= ['close'])
+
+    return df_today
+
+def ARIMA_prediction(df_today, df_historical, path_to_df_historical, ARIMA_order= (3,0,6), window_size=92):
+    """
+    Take a dataframe of the historical data of a stock to return ARIMA price foretcast in 5 days.
+    """
 
     # Add today's data to historical data
     #df_historical = pd.read_pickle(path_to_df_historical)
@@ -89,7 +99,7 @@ def ARIMA_prediction(ticker, df_historical, path_to_df_historical, ARIMA_order= 
     predicted_price_in_five_days = todays_close + (todays_close * (pred_rtn5 / 100))
 
     # Save the new df_historical
-    df_historical.to_pickle(path_to_df_historical)
+    #df_historical.to_pickle(path_to_df_historical)
 
     return predicted_price_in_five_days.iloc[0]
 
