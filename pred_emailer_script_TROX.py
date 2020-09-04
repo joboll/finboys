@@ -1,11 +1,12 @@
 from FinForecast import Share
+from FinForecast import Historical_stock as hist
 import pandas as pd
 
 ticker = 'TROX'
 path_to_df_historical = '~/Documents/finboys/_Output/TROX_2020_pour_input_arima.pickle'
 df_historical = pd.read_pickle(path_to_df_historical)
 
-df_today = Share.get_todays_close(ticker)
+df_today = hist.get_todays_close_as_df(ticker)
 pred = Share.ARIMA_prediction(df_today, df_historical, path_to_df_historical, ARIMA_order= (2,0,5))
 
 subject = 'Prediction du jour'
