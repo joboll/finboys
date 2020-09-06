@@ -92,7 +92,7 @@ def aic_optimize(PdSeries, ar_max_range= 8, ma_max_range= 12):
             aic_ls.append(aic)
     return aic_ls
 
-def tfrm_ohlc_for_arima(df, lag= 5):
+def tfrm_ohlc_to_stationarity_df(df, lag= 5):
     """Transform a ohlc dataframe as input to arima forecast process
 
         Parameters:
@@ -141,7 +141,7 @@ def rollwin_ARIMA(series, actual= 'rtn5_stdev', ARIMA_order= (1,0,1), window_siz
             df2 = af.tfrm_ohlc_for_arima(df)
             df3 = af.rollwin_ARIMA(df2['rtn5_stdev'], actual= 'rtn5_stdev')
 
-                            rtn5_stdev  Prediction    Erreur
+                            rtn5_stdev  Pred_stdev    Erreur
                 Date                                        
                 2018-06-19       -3.97       -3.93     -0.04
                 2018-06-20       -4.29       -1.88     -2.40
@@ -164,10 +164,38 @@ def rollwin_ARIMA(series, actual= 'rtn5_stdev', ARIMA_order= (1,0,1), window_siz
         # Ajouter la prédiction à la liste
         pred_col.append(pred_arma_t[window_size]) 
 
-    output_df['Prediction'] = pred_col[0:-1]
-    output_df['Erreur'] = output_df[actual] - output_df['Prediction']
+    output_df['Pred_stdev'] = pred_col[0:-1]
+    output_df['Erreur'] = output_df[actual] - output_df['Pred_stdev']
     
     return output_df
+
+def arima_tfrmed_pred_df(df, actual= 'rtn5_stdev', ARIMA_order= (6,0,3), window_size= 115):
+    """ Make a dataframe with transformed actual vs transformed predicted along with error.
+    """
+
+    # Get temporary df of rolling averages
+    df_roll_temp= af.rollwin_ARIMA(df[actual], 
+                                    actual= actual, 
+                                    ARIMA_order= ARIMA_order, 
+                                    window_size= window_size)
+
+    # Stiching all together
+    df_roll_temp['rtn5'] = df['rtn5'].iloc[window_size: :]
+    # Selon système d'équation résolut sur papier
+    df_roll_temp['Pred_rtn5'] = df_roll_temp['rtn5'] - df_roll_temp['Erreur']
+
+    return df_roll_temp
+
+def pred_error_dir(df):
+    """Ajoute une colonne au dataframe indiquant une différence entre 
+        la direction du retour prédit vs actuel.
+    """
+
+    df['Erreur_Dir'] = ( (df['rtn5'] < 0) 
+                        & (df['Pred_rtn5'] > 0)) | ((df['rtn5'] > 0) 
+                        & (df['Pred_rtn5'] < 0)
+                        )
+    return df
 
 # Accuracy metrics
 def forecast_accuracy(forecast, actual):
