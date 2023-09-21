@@ -1,16 +1,21 @@
 # ignore all of those folders
-_Archives/
+_Archives_/
 _Input/
 _Output/
 Back_up/
 Litterature/
+_Credentials/
+
 #ignore all .csv files
 *.csv 
+
 #ignore random files
 .DS_Store
 .ipynb_checkpoints/
 Plotly_test.ipynb
 _Snippets/ggsheetAPI_quickstart.py
-token.pickle
+FinBoys.code-workspace
+settings.json
+
 # ignore all caches
 *.pyc
