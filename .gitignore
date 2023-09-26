@@ -1,3 +1,24 @@
+# ignore all of those folders
+_Archives_/
+_Output/
+Back_up/
+Litterature/
+_Credentials/
+
+#ignore all .csv files
+*.csv 
+
+#ignore random files
+.DS_Store
+.ipynb_checkpoints/
+Plotly_test.ipynb
+_Snippets/ggsheetAPI_quickstart.py
+FinBoys.code-workspace
+settings.json
+
+# ignore all caches
+*.pyc
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -158,24 +179,4 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-# ignore all of those folders
-_Archives_/
-_Input/
-_Output/
-Back_up/
-Litterature/
-_Credentials/
 
-#ignore all .csv files
-*.csv 
-
-#ignore random files
-.DS_Store
-.ipynb_checkpoints/
-Plotly_test.ipynb
-_Snippets/ggsheetAPI_quickstart.py
-FinBoys.code-workspace
-settings.json
-
-# ignore all caches
-*.pyc
